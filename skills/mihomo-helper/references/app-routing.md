@@ -1,6 +1,10 @@
 # 应用分流
 
-[模板](config.yaml)预设 GitHub、Google、YouTube、Netflix 和常见流媒体代理，其余直连。新增规则前遵守 [路径与修改约定](../SKILL.md#路径与修改约定)。
+[模板](config.yaml)预设 GitHub、Google、Gemini、Antigravity、ChatGPT、YouTube、Netflix 和常见流媒体代理，其余直连。新增规则前遵守 [路径与修改约定](../SKILL.md#路径与修改约定)。
+
+AI 核心域名预置为本地规则，并先于通用 Google 规则匹配。Google、Gemini、Antigravity 及 Google 登录端点使用 `GOOGLE` 组，默认 JP；ChatGPT 使用 `CHATGPT` 组，默认 US。两组为可手动切换的 select，地区子组仍为 fallback；这不是跨国家自动故障切换。接入时核对节点和服务支持地区；已有选择缓存时需检查实际选区。YouTube 保留独立规则，不随 Google 默认地区调整。未整包导入含共享域名/ASN 的 OpenAI 社区列表，避免扩大白名单。ChatGPT 第三方认证、语音 IP/UDP，Antigravity 子进程或 SSH/WSL 远端流量需按实际连接补充；不默认代理整个 IDE 及其终端。
+
+来源：[OpenAI 网络建议](https://help.openai.com/en/articles/9247338-network-recommendations-for-chatgpt-errors-on-web-and-apps)、[Gemini 社区规则](https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash/Gemini)、[Antigravity 文档](https://antigravity.google/docs/ide/allowlist-denylist/)、[Google 论坛中的生产端点报告](https://discuss.ai.google.dev/t/bug-remote-servers-ssh-wsl-using-staging-endpoint-daily-cloudcode-pa-instead-of-production-fix-included/139412)。论坛报告不是官方完整网络清单；模板仅预置生产端点，不修改应用二进制或转向测试端点。
 
 ## 观察与选择
 

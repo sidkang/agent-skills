@@ -3,7 +3,7 @@ name: mihomo-helper
 description: "安装、维护和升级 Windows mihomo 独立核心，使用 TUN、Fake IP 和默认直连的白名单配置，为指定应用或服务增补代理规则。配置或诊断 Windows mihomo 分流时使用。"
 compatibility: "Windows x64；启用 TUN 需要可提升权限的用户会话。"
 metadata:
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # Mihomo Helper

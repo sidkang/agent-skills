@@ -3,6 +3,8 @@
 # binary-path: C:\Program Files\Mihomo\mihomo.exe
 # change-log: 追加日期、原因、改动摘要和回滚依据；不记录密钥。
 # - 初始模板：尚未接入节点或验证。
+# - 2026-09-24：预装 Gemini、Antigravity、ChatGPT 核心域名及 AI 组；回滚移除 AI 组和相应规则。
+# - 2026-09-24：v0.0.3 拆分 GOOGLE（默认 JP）与 CHATGPT（默认 US）；回滚使用 v0.0.2 模板。
 
 mixed-port: 7890
 allow-lan: false
@@ -102,6 +104,12 @@ proxy-groups:
   - name: PROXY
     type: select
     proxies: [AUTO, US, JP, TW, HK, SG, OTHER, DIRECT]
+  - name: GOOGLE
+    type: select
+    proxies: [JP, US, SG, TW, OTHER]
+  - name: CHATGPT
+    type: select
+    proxies: [US, JP, SG, TW, OTHER]
   - name: STREAM
     type: select
     proxies: [US, JP, TW, HK, SG, OTHER, AUTO, DIRECT]
@@ -205,7 +213,23 @@ rules:
   - RULE-SET,github,PROXY
   - RULE-SET,youtube,PROXY
   - RULE-SET,netflix,NETFLIX
-  - RULE-SET,google,PROXY
+  # AI 专属域名先于通用 Google；共享登录域名也会影响其他 Google 服务。
+  - DOMAIN-SUFFIX,gemini.google.com,GOOGLE
+  - DOMAIN,aistudio.google.com,GOOGLE
+  - DOMAIN,ai.google.dev,GOOGLE
+  - DOMAIN,generativelanguage.googleapis.com,GOOGLE
+  - DOMAIN,accounts.google.com,GOOGLE
+  - DOMAIN,oauth2.googleapis.com,GOOGLE
+  - DOMAIN-SUFFIX,antigravity.google,GOOGLE
+  - DOMAIN,cloudcode-pa.googleapis.com,GOOGLE
+  # ChatGPT 网页/客户端核心域名；语音和第三方认证按实际连接补充。
+  - DOMAIN-SUFFIX,chatgpt.com,CHATGPT
+  - DOMAIN-SUFFIX,openai.com,CHATGPT
+  - DOMAIN-SUFFIX,oaistatic.com,CHATGPT
+  - DOMAIN-SUFFIX,oaiusercontent.com,CHATGPT
+  - DOMAIN-SUFFIX,oaistatsig.com,CHATGPT
+  - DOMAIN,cdn.openaimerge.com,CHATGPT
+  - RULE-SET,google,GOOGLE
   - RULE-SET,stream_us,US
   - RULE-SET,stream_jp,JP
   - RULE-SET,stream_tw,TW
