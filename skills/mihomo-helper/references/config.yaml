@@ -1,58 +1,54 @@
-# Windows x64 独立 mihomo 核心：TUN + Fake IP + 白名单分流参考配置。
-# 这是模板，不含可用节点。默认复制为当前用户 ~/config/mihomo/config.yml；
-# 如已有同目录 config.yaml 则沿用，用户另指定路径时遵从。运行时 -d 指向该目录、-f 指向实际配置文件。
-# 使用前必须按 SKILL.md 接入用户自己的节点，并检查各地区组非空。
-# 白名单指“只有明确命中的服务/应用走代理”，不是 DNS fake-ip-filter-mode: whitelist。
-# TUN 会接管流量，但不会将所有流量送往代理：末尾 MATCH,DIRECT。
+# mihomo-helper: managed-template（获准部署后改为 managed，路径填实际值）
+# config-path: ~/config/mihomo/config.yml
+# binary-path: C:\Program Files\Mihomo\mihomo.exe
+# change-log: 追加日期、原因、改动摘要和回滚依据；不记录密钥。
+# - 初始模板：尚未接入节点或验证。
 
-mixed-port: 7890                  # 可选本地 HTTP/SOCKS 入口；TUN 不依赖系统代理
-allow-lan: false                  # 不对局域网设备开放代理端口
-mode: rule                        # 必须保持 rule，不能切换为 global
+mixed-port: 7890
+allow-lan: false
+mode: rule
 log-level: info
-ipv6: false                       # 先避免 Windows IPv6 旁路；如需 IPv6 须单独检查路由与 DNS
-find-process-mode: strict         # 后续按 Windows exe 精确添加进程规则时使用
+ipv6: false
+find-process-mode: strict
 profile:
-  store-selected: true            # 记住用户在 select 策略组中选择的地区
-  store-fake-ip: true             # 重启后尽量保留 Fake IP 与域名映射
+  store-selected: true
+  store-fake-ip: true
 # 诊断时才开启 API；仅绑定回环、私下设置随机强 secret。
 # external-controller: 127.0.0.1:9090
 # secret: 'REPLACE_WITH_PRIVATE_RANDOM_SECRET'
 
 tun:
   enable: true
-  stack: mixed                    # 官方 TUN 文档推荐的默认起点；防火墙需允许 mihomo
-  auto-route: true                # 修改 Windows 路由，需要相应权限；勿与另一套 TUN 同时使用
+  stack: mixed
+  auto-route: true                # 需要提升权限；避免与其他 TUN 冲突
   auto-detect-interface: true
   dns-hijack:
-    - 'any:53'                    # UDP/53（不保证捕获局域网 DNS）
-    - 'tcp://any:53'              # TCP/53
-  # strict-route: true            # Windows 可阻止多宿主 DNS 泄漏，但可能影响 VirtualBox 等；先核对环境
-  # 不写 auto-redirect：官方文档注明它是 Linux 专用项
+    - 'any:53'
+    - 'tcp://any:53'
+  # strict-route: true            # 可防 Windows 多宿主 DNS 泄漏，但可能影响虚拟机
 
 dns:
   enable: true
   ipv6: false
-  enhanced-mode: fake-ip          # TUN 捕获的 DNS 返回 Fake IP，保留域名供域名规则先匹配
+  enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter:                 # 局域网/设备发现域名返回真实 IP；不是代理白名单
+  fake-ip-filter:                 # 内网域名返回真实 IP
     - '*.lan'
     - '*.local'
     - 'localhost'
   nameserver:
-    - system                     # 未命中代理域名或直连时采用系统/网络 DNS，利于国内 CDN
+    - system
   direct-nameserver:
-    - system                     # DIRECT 实际连接的域名由系统 DNS 解析
+    - system
   proxy-server-nameserver:
-    - system                     # 仅解析代理节点自身域名；依用户网络替换，不是目标站 DNS
-  # 浏览器内置 DoH、DoT/DoQ、局域网 DNS 或其他未经过 TUN 的流量未必被 53 端口劫持。
-  # 不能承诺“零 DNS 泄漏”；需结合实际 Windows 网络、DNS 与连接记录诊断。
+    - system                     # 解析节点自身域名，不是目标站域名
 
 proxy-providers:
   subscription:
     type: http
     url: 'https://replace.example/subscription.yaml' # 只填用户授权的 mihomo 节点订阅；密钥勿提交
     path: ./providers/subscription.yaml
-    interval: 86400               # 每天自动更新节点；不是导入上游完整配置
+    interval: 86400
     health-check:
       enable: true
       url: 'https://cp.cloudflare.com'
@@ -65,8 +61,7 @@ proxy-groups:
     url: 'https://cp.cloudflare.com'
     interval: 300
     tolerance: 100
-  # 地区靠节点名称筛选；默认按订阅中的节点顺序优先使用第一个可用节点，故障时 fallback。
-  # fallback 并非延迟最低优先；接入订阅时核对地区归属、节点顺序及空组。
+  # 地区组按顺序故障切换；接入订阅时核对名称、优先级及空组。
   - name: US
     type: fallback
     use: [subscription]
@@ -100,7 +95,7 @@ proxy-groups:
   - name: OTHER
     type: fallback
     use: [subscription]
-    # 不使用 Go/RE2 不支持的负向前瞻；过滤掉以上五区，剩余节点归 OTHER。
+    # 排除以上五区，其余归 OTHER。
     exclude-filter: '(?i)(美国|美國|美区|🇺🇸|\bUS\b|United States|日本|🇯🇵|\bJP\b|Japan|台湾|台灣|🇹🇼|\bTW\b|Taiwan|香港|🇭🇰|\bHK\b|Hong Kong|HongKong|新加坡|狮城|獅城|🇸🇬|\bSG\b|Singapore)'
     url: 'https://cp.cloudflare.com'
     interval: 300
@@ -115,7 +110,6 @@ proxy-groups:
     proxies: [US, JP, TW, HK, SG, OTHER, AUTO, DIRECT]
 
 rule-providers:
-  # blackmatrix7 的 Clash .list 为 classical/text；服务规则按域名优先匹配。
   github:
     type: http
     behavior: classical
@@ -144,7 +138,6 @@ rule-providers:
     url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list'
     path: ./rules/netflix.list
     interval: 43200
-  # Sukka 的 Clash 版本；不可把 Surge List/*.conf 当作 mihomo provider。
   stream_us:
     type: http
     behavior: classical
@@ -180,18 +173,16 @@ rule-providers:
     url: 'https://ruleset.skk.moe/Clash/non_ip/stream.txt'
     path: ./rules/stream_other.txt
     interval: 43200
-  # 一些流媒体使用 IP 直连；IP 规则必须排在全部域名/非 IP 规则之后。
   stream_ip:
     type: http
-    behavior: classical            # Sukka 的 Clash/ip/stream.txt 是经典规则格式
+    behavior: classical
     format: text
     url: 'https://ruleset.skk.moe/Clash/ip/stream.txt'
     path: ./rules/stream_ip.txt
     interval: 43200
-  # CN / 内网直连不借用 geosite:cn：使用 Sukka 的内网及中国 IP 列表。
   lan_ip:
     type: http
-    behavior: classical            # Sukka 的 Clash/ip/lan.txt 含 DOMAIN 和 IP-CIDR，不是纯 CIDR
+    behavior: classical            # 含 DOMAIN 和 IP-CIDR，不是纯 CIDR
     format: text
     url: 'https://ruleset.skk.moe/Clash/ip/lan.txt'
     path: ./rules/lan_ip.txt
@@ -205,9 +196,9 @@ rule-providers:
     interval: 43200
 
 rules:
-  # 新增应用规则放在这里：精确域名/进程优先，IP 类规则靠后；需先确认其流量确实被 TUN 捕获。
+  # 新增精确应用规则放在这里；IP 类规则放到域名规则之后。
   # - 'PROCESS-PATH,C:\Program Files\Vendor\App\app.exe,US'
-  # 非 IP：GitHub 下载/更新基础域名先命中；即使远程规则第一次无法获取也能处理常用入口。
+  # GitHub 内置规则不依赖远程规则文件加载。
   - DOMAIN-SUFFIX,github.com,PROXY
   - DOMAIN-SUFFIX,githubusercontent.com,PROXY
   - DOMAIN-SUFFIX,githubassets.com,PROXY
@@ -220,10 +211,9 @@ rules:
   - RULE-SET,stream_tw,TW
   - RULE-SET,stream_hk,HK
   - RULE-SET,stream_other,STREAM
-  # IP：先为内网保底；已是 IP 的目的地可匹配流媒体 IP。
+  # IP 规则放在非 IP 规则之后。
   - RULE-SET,lan_ip,DIRECT,no-resolve
   - RULE-SET,stream_ip,STREAM
-  # 国内 IP 直连；不匹配的国内域名也由最终 DIRECT 处理。
   - RULE-SET,china_ip,DIRECT
-  # 最终兜底始终直连；严禁把这条改成 PROXY（否则不再是白名单）。
+  # 白名单兜底：未命中代理规则的一律直连。
   - MATCH,DIRECT
