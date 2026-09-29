@@ -1,0 +1,282 @@
+# mihomo-helper: managed-template（获准部署后改为 managed，路径填实际值）
+# config-path: ~/config/mihomo/config.yml
+# binary-path: C:\Program Files\Mihomo\mihomo.exe
+# change-log: 追加日期、原因、改动摘要和回滚依据；不记录密钥。
+# - 初始模板：尚未接入节点或验证。
+# - 2026-09-24：预装 Gemini、Antigravity、ChatGPT 核心域名及 AI 组；回滚移除 AI 组和相应规则。
+# - 2026-09-24：v0.0.3 拆分 GOOGLE（默认 JP）与 CHATGPT（默认 US）；回滚使用 v0.0.2 模板。
+# - 2026-09-24：v0.0.4 空组拒绝、同范围 UDP 兜底和内网域名例外；回滚参考变更前快照。
+# rule-preset: community-wide；远程清单可含关键字/进程/IP，接入前须确认范围。
+
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+ipv6: false
+find-process-mode: strict
+profile:
+  store-selected: true
+  store-fake-ip: true
+# 诊断时才开启 API；仅绑定回环、私下设置随机强 secret。
+# external-controller: 127.0.0.1:9090
+# secret: 'REPLACE_WITH_PRIVATE_RANDOM_SECRET'
+
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true                # 需要提升权限；避免与其他 TUN 冲突
+  auto-detect-interface: true
+  dns-hijack:
+    - 'any:53'
+    - 'tcp://any:53'
+  # strict-route: true            # 可能影响虚拟机；不是自动开启项
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:                 # 返回真实 IP，不代表已设为 DIRECT
+    - '*.lan'
+    - '*.local'
+    - 'localhost'
+  nameserver:
+    - system
+  direct-nameserver:
+    - system
+  proxy-server-nameserver:
+    - system                     # 解析节点自身域名，不是目标站域名
+
+proxy-providers:
+  subscription:
+    type: http
+    url: 'https://replace.example/subscription.yaml' # 只填用户授权的 mihomo 节点订阅；密钥勿提交
+    path: ./providers/subscription.yaml
+    interval: 86400
+    health-check:
+      enable: true
+      url: 'https://cp.cloudflare.com'
+      interval: 300
+
+proxy-groups:
+  - name: AUTO
+    type: url-test
+    use: [subscription]
+    empty-fallback: REJECT
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+    tolerance: 100
+  # 地区组按顺序故障切换；空组拒绝，不等于所有节点失效时会自动换地区。
+  - name: US
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    filter: '(?i)(美国|美國|美区|🇺🇸|\bUS\b|United States)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: JP
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    filter: '(?i)(日本|🇯🇵|\bJP\b|Japan)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: TW
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    filter: '(?i)(台湾|台灣|🇹🇼|\bTW\b|Taiwan)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: HK
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    filter: '(?i)(香港|🇭🇰|\bHK\b|Hong Kong|HongKong)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: SG
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    filter: '(?i)(新加坡|狮城|獅城|🇸🇬|\bSG\b|Singapore)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: OTHER
+    type: fallback
+    use: [subscription]
+    empty-fallback: REJECT
+    exclude-filter: '(?i)(美国|美國|美区|🇺🇸|\bUS\b|United States|日本|🇯🇵|\bJP\b|Japan|台湾|台灣|🇹🇼|\bTW\b|Taiwan|香港|🇭🇰|\bHK\b|Hong Kong|HongKong|新加坡|狮城|獅城|🇸🇬|\bSG\b|Singapore)'
+    url: 'https://cp.cloudflare.com'
+    interval: 300
+  - name: PROXY
+    type: select
+    proxies: [AUTO, US, JP, TW, HK, SG, OTHER, DIRECT]
+  - name: GOOGLE
+    type: select
+    proxies: [JP, US, SG, TW, OTHER]
+  - name: CHATGPT
+    type: select
+    proxies: [US, JP, SG, TW, OTHER]
+  - name: STREAM
+    type: select
+    proxies: [US, JP, TW, HK, SG, OTHER, AUTO, DIRECT]
+  - name: NETFLIX
+    type: select
+    proxies: [US, JP, TW, HK, SG, OTHER, AUTO, DIRECT]
+
+# 保留既有社区广覆盖预设，并非精确域名白名单。精确模式见 app-routing.md。
+rule-providers:
+  github:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.list'
+    path: ./rules/github.list
+    interval: 43200
+  youtube:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list'
+    path: ./rules/youtube.list
+    interval: 43200
+  google:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list'
+    path: ./rules/google.list
+    interval: 43200
+  netflix:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list'
+    path: ./rules/netflix.list
+    interval: 43200
+  stream_us:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/non_ip/stream_us.txt'
+    path: ./rules/stream_us.txt
+    interval: 43200
+  stream_jp:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/non_ip/stream_jp.txt'
+    path: ./rules/stream_jp.txt
+    interval: 43200
+  stream_tw:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/non_ip/stream_tw.txt'
+    path: ./rules/stream_tw.txt
+    interval: 43200
+  stream_hk:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/non_ip/stream_hk.txt'
+    path: ./rules/stream_hk.txt
+    interval: 43200
+  stream_other:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/non_ip/stream.txt'
+    path: ./rules/stream_other.txt
+    interval: 43200
+  stream_ip:
+    type: http
+    behavior: classical
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/ip/stream.txt'
+    path: ./rules/stream_ip.txt
+    interval: 43200
+  lan_ip:
+    type: http
+    behavior: classical            # 含 DOMAIN 和 IP-CIDR，不是纯 CIDR
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/ip/lan.txt'
+    path: ./rules/lan_ip.txt
+    interval: 43200
+  china_ip:
+    type: http
+    behavior: ipcidr
+    format: text
+    url: 'https://ruleset.skk.moe/Clash/ip/china_ip.txt'
+    path: ./rules/china_ip.txt
+    interval: 43200
+
+rules:
+  # 模板的内网域名例外；部署前核对，用户确认的额外例外也放在服务规则之前。
+  - DOMAIN,localhost,DIRECT
+  - DOMAIN-SUFFIX,lan,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  # 每条代理规则紧跟同范围 UDP 拒绝：节点不支持 UDP 时不继续落到直连。
+  # 新增规则亦须成对；显式选择 DIRECT 时第一条直接生效，不触发拒绝。
+  - DOMAIN-SUFFIX,github.com,PROXY
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,github.com)),REJECT
+  - DOMAIN-SUFFIX,githubusercontent.com,PROXY
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,githubusercontent.com)),REJECT
+  - DOMAIN-SUFFIX,githubassets.com,PROXY
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,githubassets.com)),REJECT
+  - RULE-SET,github,PROXY
+  - AND,((NETWORK,udp),(RULE-SET,github)),REJECT
+  - RULE-SET,youtube,PROXY
+  - AND,((NETWORK,udp),(RULE-SET,youtube)),REJECT
+  - RULE-SET,netflix,NETFLIX
+  - AND,((NETWORK,udp),(RULE-SET,netflix)),REJECT
+  # AI 专属域名先于通用 Google；共享登录域名也会影响其他 Google 服务。
+  - DOMAIN-SUFFIX,gemini.google.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,gemini.google.com)),REJECT
+  - DOMAIN,aistudio.google.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,aistudio.google.com)),REJECT
+  - DOMAIN,ai.google.dev,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,ai.google.dev)),REJECT
+  - DOMAIN,generativelanguage.googleapis.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,generativelanguage.googleapis.com)),REJECT
+  - DOMAIN,accounts.google.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,accounts.google.com)),REJECT
+  - DOMAIN,oauth2.googleapis.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,oauth2.googleapis.com)),REJECT
+  - DOMAIN-SUFFIX,antigravity.google,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,antigravity.google)),REJECT
+  - DOMAIN,cloudcode-pa.googleapis.com,GOOGLE
+  - AND,((NETWORK,udp),(DOMAIN,cloudcode-pa.googleapis.com)),REJECT
+  # 语音 IP、第三方认证和远程开发流量按实际连接补充，不能视为完整清单。
+  - DOMAIN-SUFFIX,chatgpt.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,chatgpt.com)),REJECT
+  - DOMAIN-SUFFIX,openai.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,openai.com)),REJECT
+  - DOMAIN-SUFFIX,oaistatic.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,oaistatic.com)),REJECT
+  - DOMAIN-SUFFIX,oaiusercontent.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,oaiusercontent.com)),REJECT
+  - DOMAIN-SUFFIX,oaistatsig.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN-SUFFIX,oaistatsig.com)),REJECT
+  - DOMAIN,cdn.openaimerge.com,CHATGPT
+  - AND,((NETWORK,udp),(DOMAIN,cdn.openaimerge.com)),REJECT
+  - RULE-SET,google,GOOGLE
+  - AND,((NETWORK,udp),(RULE-SET,google)),REJECT
+  - RULE-SET,stream_us,US
+  - AND,((NETWORK,udp),(RULE-SET,stream_us)),REJECT
+  - RULE-SET,stream_jp,JP
+  - AND,((NETWORK,udp),(RULE-SET,stream_jp)),REJECT
+  - RULE-SET,stream_tw,TW
+  - AND,((NETWORK,udp),(RULE-SET,stream_tw)),REJECT
+  - RULE-SET,stream_hk,HK
+  - AND,((NETWORK,udp),(RULE-SET,stream_hk)),REJECT
+  - RULE-SET,stream_other,STREAM
+  - AND,((NETWORK,udp),(RULE-SET,stream_other)),REJECT
+  # IP 规则放在非 IP 规则之后。
+  - RULE-SET,lan_ip,DIRECT,no-resolve
+  - RULE-SET,stream_ip,STREAM
+  - AND,((NETWORK,udp),(RULE-SET,stream_ip)),REJECT
+  - RULE-SET,china_ip,DIRECT
+  # 未指定代理的流量直连，不代表指定代理失败后允许直连。
+  - MATCH,DIRECT

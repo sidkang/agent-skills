@@ -1,0 +1,38 @@
+name: mihomo-helper regression
+on:
+  push:
+    branches: [master, fix/mihomo-helper-0.0.4-20260924]
+    paths: ['skills/mihomo-helper/**', '.github/workflows/mihomo-helper.yml']
+  pull_request:
+    paths: ['skills/mihomo-helper/**', '.github/workflows/mihomo-helper.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install test-only dependencies
+        run: python3 -m pip install -r skills/mihomo-helper/tests/requirements.txt
+      - name: Offline invariants
+        run: python3 -m unittest discover -s skills/mihomo-helper/tests -p test_static.py -v
+      - name: Verify pinned official test core
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 skills/mihomo-helper/tests/download_core.py
+      - name: Real-core loopback regressions
+        run: python3 -m unittest discover -s skills/mihomo-helper/tests -p test_core.py -v
+  windows-transaction:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Windows PowerShell transaction fixtures
+        shell: powershell
+        run: .\skills\mihomo-helper\tests\Test-Transaction.ps1
