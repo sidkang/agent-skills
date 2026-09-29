@@ -24,6 +24,8 @@
 | [bro](skills/bro/SKILL.md) § | 将上一条回复改写得简洁易懂，少用术语，保留原来的语言。 |
 | [getme](skills/getme/SKILL.md) | 复述对用户目标和问题的理解，区分明确意图与推测，不开始执行。 |
 | [skill-authoring](skills/skill-authoring/SKILL.md) | 指导编写和改进 skill，明确工具接口、辅助脚本与验证方法。 |
+| [try-serve](skills/try-serve/SKILL.md) | 通过临时 Cloudflare 隧道分享本地 HTML 或静态目录，支持自动到期。 |
+| [quark](skills/quark/SKILL.md) | 操作夸克网盘，支持搜索、上传、下载、分享、转存与可逆隔离删除。 |
 | [mihomo-helper](skills/mihomo-helper/SKILL.md) | 安装、升级和维护 Windows mihomo 核心，配置 TUN 与应用分流。 |
 
 † 改编自 [Matt Pocock](https://github.com/mattpocock/skills)；‡ 改编自 [Armin Ronacher](https://github.com/mitsuhiko/agent-stuff)；§ 改编自 [dmmulroy/skills](https://github.com/dmmulroy/skills)。
