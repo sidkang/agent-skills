@@ -1,5 +1,4 @@
 #!/usr/bin/env bun
-// Modified by sidkang for the local Bun/CDP workflow; see SKILL.md for changes.
 
 import { spawn, execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";

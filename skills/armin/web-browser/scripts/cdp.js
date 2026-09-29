@@ -1,5 +1,4 @@
 /**
- * Modified by sidkang for the local Bun/CDP workflow; see SKILL.md for changes.
  * Minimal CDP client - no puppeteer, no hangs
  */
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env bun
-// Modified by sidkang for the local Bun/CDP workflow; see SKILL.md for changes.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";

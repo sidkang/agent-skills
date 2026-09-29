@@ -12,7 +12,7 @@ metadata:
     notes:
       - local: use Bun's built-in WebSocket instead of upstream ws, including authenticated CDP WebSocket handshakes, with no npm dependency files.
       - local: retain package-specific Bun versus Node research under `docs/research/`.
-      - local: clarify the Apache-2.0 license, preserve the upstream Mario attribution, and mark modified scripts.
+      - local: clarify the Apache-2.0 license and preserve the upstream Mario attribution; record local changes here without repeating notices in helper scripts.
       - local: adapt skill routing and connection behavior to prefer CDP_ENDPOINT with optional CDP_API_KEY, and require user confirmation before bypassing it with --local.
       - local: resolve HTTP(S) CDP roots, including path prefixes such as /cdp, to /json/version before discovery.
       - local: handle cookie dialogs only when needed for the task; accepting optional tracking requires the user's choice rather than automatic consent.
