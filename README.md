@@ -4,22 +4,24 @@
 
 ## Skills
 
-| Skill | 用途 | 来源 |
-| --- | --- | --- |
-| [codebase-design](skills/matt-pocock/codebase-design/SKILL.md) | 用深模块设计原则梳理模块接口、边界与可测试性。 | Matt Pocock |
-| [domain-modeling](skills/matt-pocock/domain-modeling/SKILL.md) | 明确领域术语与模型，并将共识沉淀为词汇表和 ADR。 | Matt Pocock |
-| [grill-with-docs](skills/matt-pocock/grill-with-docs/SKILL.md) | 通过追问澄清方案，同时记录领域术语和架构决策。 | Matt Pocock |
-| [grilling](skills/matt-pocock/grilling/SKILL.md) | 通过多轮访谈挑战假设、澄清需求并收敛决策。 | Matt Pocock |
-| [handoff](skills/matt-pocock/handoff/SKILL.md) | 将当前讨论整理为可供下一位 agent 或下一次会话接手的交接文档。 | Matt Pocock |
-| [improve-codebase-architecture](skills/matt-pocock/improve-codebase-architecture/SKILL.md) | 扫描代码库的模块设计改进机会，生成 HTML 报告并讨论选中的方案。 | Matt Pocock |
-| [prototype](skills/matt-pocock/prototype/SKILL.md) | 用一次性逻辑或 UI 原型验证设计问题，而不是直接交付生产实现。 | Matt Pocock |
-| [setup-repo](skills/matt-pocock/setup-repo/SKILL.md) | 为工程规划流程配置议题跟踪、分类标签和领域文档布局。 | Matt Pocock |
-| [teach](skills/matt-pocock/teach/SKILL.md) | 在当前工作区内教授概念或技能，并组织学习记录与练习。 | Matt Pocock |
-| [to-spec](skills/matt-pocock/to-spec/SKILL.md) | 将已讨论清楚的内容整理成需求规格并发布到项目议题跟踪器。 | Matt Pocock |
-| [to-tickets](skills/matt-pocock/to-tickets/SKILL.md) | 将计划或规格拆成可验收的纵向任务，并明确任务之间的阻塞关系。 | Matt Pocock |
-| [triage](skills/matt-pocock/triage/SKILL.md) | 对 issues 和外部 PR 分类、核实和澄清，整理成可交给 agent 执行的简报。 | Matt Pocock |
-| [wayfinder](skills/matt-pocock/wayfinder/SKILL.md) | 将跨多个会话的大型规划组织为决策地图，逐步消除未知和阻塞。 | Matt Pocock |
-| [mihomo-helper](skills/mihomo-helper/SKILL.md) | 安装、维护和升级 Windows mihomo 独立核心，管理 TUN、Fake IP 与应用分流。 | |
+| Skill | 用途 |
+| --- | --- |
+| [codebase-design](skills/matt-pocock/codebase-design/SKILL.md) † | 设计模块接口、边界与测试切入点。 |
+| [domain-modeling](skills/matt-pocock/domain-modeling/SKILL.md) † | 梳理领域模型，记录术语与 ADR。 |
+| [grill-with-docs](skills/matt-pocock/grill-with-docs/SKILL.md) † | 通过访谈澄清方案并沉淀决策文档。 |
+| [grilling](skills/matt-pocock/grilling/SKILL.md) † | 通过追问挑战假设、澄清需求。 |
+| [handoff](skills/matt-pocock/handoff/SKILL.md) † | 将当前讨论整理为交接文档。 |
+| [improve-codebase-architecture](skills/matt-pocock/improve-codebase-architecture/SKILL.md) † | 扫描架构改进机会并生成可视化报告。 |
+| [prototype](skills/matt-pocock/prototype/SKILL.md) † | 用一次性逻辑或 UI 原型验证设计。 |
+| [setup-repo](skills/matt-pocock/setup-repo/SKILL.md) † | 配置议题跟踪、标签和领域文档。 |
+| [teach](skills/matt-pocock/teach/SKILL.md) † | 教授概念与技能，组织练习和学习记录。 |
+| [to-spec](skills/matt-pocock/to-spec/SKILL.md) † | 将讨论整理成需求规格并发布。 |
+| [to-tickets](skills/matt-pocock/to-tickets/SKILL.md) † | 拆分可验收的任务并明确依赖。 |
+| [triage](skills/matt-pocock/triage/SKILL.md) † | 分诊 issues 与 PR，整理执行简报。 |
+| [wayfinder](skills/matt-pocock/wayfinder/SKILL.md) † | 用决策地图推进跨会话的大型规划。 |
+| [mihomo-helper](skills/mihomo-helper/SKILL.md) | 维护 Windows mihomo 核心与应用分流。 |
+
+† 改编自 [Matt Pocock](https://github.com/mattpocock/skills)。
 
 ## 安装与更新
 
