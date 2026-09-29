@@ -22,6 +22,7 @@
 | [librarian](skills/armin/librarian/SKILL.md) ‡ | 缓存并更新远程 Git 仓库，供本地阅读源码、检索文件与查看历史。 |
 | [web-browser](skills/armin/web-browser/SKILL.md) ‡ | 通过 CDP 操作浏览器，支持页面交互、截图与控制台和网络调试。 |
 | [bro](skills/bro/SKILL.md) § | 将上一条回复改写得简洁易懂，少用术语，保留原来的语言。 |
+| [getme](skills/getme/SKILL.md) | 复述对用户目标和问题的理解，区分明确意图与推测，不开始执行。 |
 | [skill-authoring](skills/skill-authoring/SKILL.md) | 指导编写和改进 skill，明确工具接口、辅助脚本与验证方法。 |
 | [mihomo-helper](skills/mihomo-helper/SKILL.md) | 安装、升级和维护 Windows mihomo 核心，配置 TUN 与应用分流。 |
 
