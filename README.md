@@ -19,9 +19,12 @@
 | [to-tickets](skills/matt-pocock/to-tickets/SKILL.md) † | 将规格拆成可独立验收的纵向任务，明确交付内容和阻塞关系。 |
 | [triage](skills/matt-pocock/triage/SKILL.md) † | 对 issues 与外部 PR 分类、核实和澄清，整理为可执行的简报。 |
 | [wayfinder](skills/matt-pocock/wayfinder/SKILL.md) † | 将大型规划组织为跨会话的决策地图，逐步解决未知与阻塞。 |
+| [librarian](skills/armin/librarian/SKILL.md) ‡ | 缓存并更新远程 Git 仓库，供本地阅读源码、检索文件与查看历史。 |
+| [web-browser](skills/armin/web-browser/SKILL.md) ‡ | 通过 CDP 操作浏览器，支持页面交互、截图与控制台和网络调试。 |
+| [skill-authoring](skills/skill-authoring/SKILL.md) | 指导编写和改进 skill，明确工具接口、辅助脚本与验证方法。 |
 | [mihomo-helper](skills/mihomo-helper/SKILL.md) | 安装、升级和维护 Windows mihomo 核心，配置 TUN 与应用分流。 |
 
-† 改编自 [Matt Pocock](https://github.com/mattpocock/skills)。
+† 改编自 [Matt Pocock](https://github.com/mattpocock/skills)；‡ 改编自 [Armin Ronacher](https://github.com/mitsuhiko/agent-stuff)。
 
 ## 安装与更新
 
@@ -50,9 +53,10 @@ npx skills@latest update -g
 
 ## 许可证
 
-本仓库采用 [MIT License](LICENSE)，保留上游作者的版权声明。
+除另有注明外采用 [MIT License](LICENSE)；`skills/armin/` 保留上游的 [Apache-2.0](LICENSE-APACHE) 许可，修改说明见各 skill 的来源记录。单独分发 skill 时也需随附适用的许可证。
 
 ## 致谢
 
 - [mattpocock/skills](https://github.com/mattpocock/skills) — Matt Pocock 系列的上游来源。
+- [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Armin 系列的上游来源及 skill-authoring 的方法启发。
 - [vercel-labs/skills](https://github.com/vercel-labs/skills) — Skill 安装与更新工具。
