@@ -59,4 +59,3 @@ npx skills@latest update -g
 
 - [mattpocock/skills](https://github.com/mattpocock/skills) — Matt Pocock 系列的上游来源。
 - [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Armin 系列的上游来源及 skill-authoring 的方法启发。
-- [vercel-labs/skills](https://github.com/vercel-labs/skills) — Skill 安装与更新工具。
