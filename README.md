@@ -21,10 +21,11 @@
 | [wayfinder](skills/matt-pocock/wayfinder/SKILL.md) † | 将大型规划组织为跨会话的决策地图，逐步解决未知与阻塞。 |
 | [librarian](skills/armin/librarian/SKILL.md) ‡ | 缓存并更新远程 Git 仓库，供本地阅读源码、检索文件与查看历史。 |
 | [web-browser](skills/armin/web-browser/SKILL.md) ‡ | 通过 CDP 操作浏览器，支持页面交互、截图与控制台和网络调试。 |
+| [bro](skills/bro/SKILL.md) § | 将上一条回复改写得简洁易懂，少用术语，保留原来的语言。 |
 | [skill-authoring](skills/skill-authoring/SKILL.md) | 指导编写和改进 skill，明确工具接口、辅助脚本与验证方法。 |
 | [mihomo-helper](skills/mihomo-helper/SKILL.md) | 安装、升级和维护 Windows mihomo 核心，配置 TUN 与应用分流。 |
 
-† 改编自 [Matt Pocock](https://github.com/mattpocock/skills)；‡ 改编自 [Armin Ronacher](https://github.com/mitsuhiko/agent-stuff)。
+† 改编自 [Matt Pocock](https://github.com/mattpocock/skills)；‡ 改编自 [Armin Ronacher](https://github.com/mitsuhiko/agent-stuff)；§ 改编自 [dmmulroy/skills](https://github.com/dmmulroy/skills)。
 
 ## 安装与更新
 
@@ -59,3 +60,4 @@ npx skills@latest update -g
 
 - [mattpocock/skills](https://github.com/mattpocock/skills) — Matt Pocock 系列的上游来源。
 - [mitsuhiko/agent-stuff](https://github.com/mitsuhiko/agent-stuff) — Armin 系列的上游来源及 skill-authoring 的方法启发。
+- [dmmulroy/skills](https://github.com/dmmulroy/skills) — bro 的上游来源。
